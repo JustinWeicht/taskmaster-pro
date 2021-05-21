@@ -69,19 +69,20 @@ $(".list-group").on("click", "p", function() {
   $(this).replaceWith(textInput);
 });
 
+// updates and saves task description on clicking off of the edit area
 $(".list-group").on("blur", "textarea", function() {
   // get the textarea's current value/text
   var text = $(this)
     .val()
     .trim();
 
-  //get the parent ul's id attribute
+  // get the parent ul's id attribute
   var status = $(this)
     .closest(".list-group")
     .attr("id")
     .replace("list-", "");
 
-  //get the task's position in the list of other li elements
+  // get the task's position in the list of other li elements
   var index = $(this)
     .closest(".list-group-item")
     .index();
@@ -96,6 +97,57 @@ $(".list-group").on("blur", "textarea", function() {
 
   // replace textarea with p element
   $(this).replaceWith(taskP);
+});
+
+// due date was clicked
+$(".list-group").on("click", "span", function() {
+  // get current text
+  var date = $(this)
+    .text()
+    .trim();
+
+  // creates new input element
+  var dateInput = $("<input>")
+    .attr("type", "text")
+    .addClass("form-control")
+    .val(date);
+
+  // swap out elements
+  $(this).replaceWith(dateInput);
+
+  //automatically focus on new element
+  dateInput.trigger("focus");
+});
+
+// value of due date changed
+$(".list-group").on("blur", "input[type='text']", function() {
+  // ger current text
+  var date = $(this)
+    .val()
+    .trim();
+
+  // get the parent ul's id attribute
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+
+  // get the task's position in the list of other li elements
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  //update task in array and re-save to localStorage
+  tasks[status][index].date = date;
+  saveTasks();
+
+  // recreate span element with bootstrap classes
+  var taskSpan = $("<span>")
+    .addClass("badge badge-primary badge-pill")
+    .text(date);
+
+  //replace input with span element
+  $(this).replaceWith(taskSpan);
 });
 
 // save button in modal was clicked
